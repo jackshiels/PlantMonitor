@@ -1,51 +1,65 @@
-/*
-Into Robotics
-*/
+#include <ESP8266WiFi.h>
  
-#include <Servo.h>  //add '<' and '>' before and after servo.h
- 
-int servoPin = 8;
- 
-Servo servo;  
- 
-int servoAngle = 0;   // servo position in degrees
- 
+ const char* ssid = "5GEE-Router-893N";
+ const char* password = "Shellfish678*%*";
+ const char* host = "apple.com";
+
 void setup()
 {
-  Serial.begin(9600);  
-  servo.attach(servoPin);
+  // Open the serial monitor
+  Serial.begin(115200);
+  delay(100);
+
+  // Connect to WiFi
+  Serial.println();
+  Serial.println("Connecting to "); Serial.print(ssid);
+  WiFi.begin(ssid, password);
+
+  while(WiFi.status() != WL_CONNECTED){
+    delay(500);
+    Serial.print("-");
+  }
+  Serial.print("*");
+
+  Serial.println();
+  Serial.println("WiFi Connected");
+  Serial.println(WiFi.localIP());
 }
- 
- 
+
 void loop()
 {
-//control the servo's direction and the position of the motor
- 
-   servo.write(45);      // Turn SG90 servo Left to 45 degrees
-   delay(1000);          // Wait 1 second
-   servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
-   delay(1000);          // Wait 1 second
-   servo.write(135);     // Turn SG90 servo Right to 135 degrees
-   delay(1000);          // Wait 1 second
-   servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
-   delay(1000);
- 
-//end control the servo's direction and the position of the motor
- 
- 
-//control the servo's speed  
- 
-//if you change the delay value (from example change 50 to 10), the speed of the servo changes
-  for(servoAngle = 0; servoAngle < 180; servoAngle++)  //move the micro servo from 0 degrees to 180 degrees
-  {                                  
-    servo.write(servoAngle);              
-    delay(50);                  
+  delay(5000);
+
+  Serial.println("-------------------------------");
+  Serial.print("Connecting to ");
+  Serial.println(host);
+
+  // Use WiFiClient class to create TCP connections
+  WiFiClient client;
+  const int httpPort = 80;
+  if (!client.connect(host, httpPort)) {
+    Serial.println("connection failed");
+    return;
   }
- 
-  for(servoAngle = 180; servoAngle > 0; servoAngle--)  //now move back the micro servo from 0 degrees to 180 degrees
-  {                                
-    servo.write(servoAngle);          
-    delay(10);      
+
+    // We now create a URI for the request
+  String url = "/index.html";
+  Serial.print("Requesting URL: ");
+  Serial.println(host + url);
+
+  // This will send the request to the server
+  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+               "Host: " + host + "\r\n" +
+               "Connection: close\r\n\r\n");
+
+  delay(500);
+
+  // Read all the lines of the reply from server and print them to Serial
+  while(client.available()){
+    String line = client.readStringUntil('\r');
+    Serial.print(line);
   }
-  //end control the servo's speed  
+
+  Serial.println();
+  Serial.println("closing connection");
 }
