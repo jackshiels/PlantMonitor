@@ -2,8 +2,8 @@
 #include <PubSubClient.h>
 //#include <arduino_secrets.h>
  
- const char* ssid = "CE-Hub-Student";
- const char* password = "casa-ce-gagarin-public-service";
+ const char* ssid = "5GEE-Router-893N";
+ const char* password = "Shellfish678*%*";
  const char* mqttuser = "student";
  const char* mqttpass = "ce2021-mqtt-forget-whale";
  const char* mqtt_server = "mqtt.cetools.org";
