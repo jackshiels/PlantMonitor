@@ -16,6 +16,7 @@ int Moisture = 1; // initial value just in case web page is loaded before readMo
 int sensorVCC = 13;
 int blueLED = 2;
 DHT dht(DHTPin, DHTTYPE);   // Initialize DHT sensor.
+int Tx = 16;
 
 // Hidden variables for WiFi and MQTT
 const char* ssid     = SECRET_SSID;
@@ -72,8 +73,9 @@ void loop() {
   delay(10000);
   readMoisture();
   sendMQTT();
-  Serial.println(GB.dateTime("H:i:s")); // UTC.dateTime("l, d-M-y H:i:s.v T")
+  // Serial.println(GB.dateTime("H:i:s")); // UTC.dateTime("l, d-M-y H:i:s.v T")
 
+  // Send the Rx signal to the other Arduino
   client.loop();
 }
 
@@ -90,34 +92,34 @@ void readMoisture(){
   digitalWrite(sensorVCC, LOW);  
   digitalWrite(blueLED, HIGH);
   delay(100);
-  Serial.print("Wet ");
-  Serial.println(Moisture);   // read the value from the nails
+  // Serial.print("Wet ");
+  // Serial.println(Moisture);   // read the value from the nails
 }
 
 void startWifi() {
   // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+  // Serial.println();
+  // Serial.print("Connecting to ");
+  // Serial.println(ssid);
   WiFi.begin(ssid, password);
 
   // check to see if connected and wait until you are
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    // Serial.print(".");
   }
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  // Serial.println("");
+  // Serial.println("WiFi connected");
+  // Serial.print("IP address: ");
+  // Serial.println(WiFi.localIP());
 }
 
 void syncDate() {
   // get real date and time
   waitForSync();
-  Serial.println("UTC: " + UTC.dateTime());
+  // Serial.println("UTC: " + UTC.dateTime());
   GB.setLocation("Europe/London");
-  Serial.println("London time: " + GB.dateTime());
+  // Serial.println("London time: " + GB.dateTime());
 }
 
 void startWebserver() {
@@ -126,7 +128,7 @@ void startWebserver() {
   server.on("/", handle_OnConnect);
   server.onNotFound(handle_NotFound);
   server.begin();
-  Serial.println("HTTP server started");
+  // Serial.println("HTTP server started");
 }
 
 void sendMQTT() {
@@ -141,38 +143,43 @@ void sendMQTT() {
 
   // Sends the values of the temperature
   snprintf (msg, 50, "%.1f", Temperature);
-  Serial.print("Publish message for t: ");
-  Serial.println(msg);
+  // Serial.print("Publish message for t: ");
+  // Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/temperature", msg);
 
   // Sends the values of the humidity
   snprintf (msg, 50, "%.0f", Humidity);
-  Serial.print("Publish message for h: ");
-  Serial.println(msg);
+  // Serial.print("Publish message for h: ");
+  // Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/humidity", msg);
 
   // Moisture = analogRead(soilPin);   // moisture read by readMoisture function
   snprintf (msg, 50, "%.0i", Moisture);
-  Serial.print("Publish message for m: ");
-  Serial.println(msg);
+  // Serial.print("Publish message for m: ");
+  // Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/moisture", msg);
 }
 
 void ReadDHTValues(){
   // Get the temperature and humidity DHT values
   Temperature = dht.readTemperature();
-  Humidity = dht.readHumidity();  
+  Humidity = dht.readHumidity();
+
+  // Alert the other Arduino via Tx/Rx
+  if (Temperature < 25){
+    Serial.print(1);
+  }
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
   // Receives a message from MQTT
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
+  // Serial.print("Message arrived [");
+  // Serial.print(topic);
+  // Serial.print("] ");
   for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
+    // Serial.print((char)payload[i]);
   }
-  Serial.println();
+  // Serial.println();
 
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == '1') {
@@ -186,20 +193,20 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
+    // Serial.print("Attempting MQTT connection...");
     // Create a random client ID
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
     
     // Attempt to connect with clientID, username and password
     if (client.connect(clientId.c_str(), mqttuser, mqttpass)) {
-      Serial.println("connected");
+      // Serial.println("connected");
       // ... and resubscribe
       client.subscribe("student/CASA0014/plant/ucfnhie/inTopic");
     } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
+      // Serial.print("failed, rc=");
+      // Serial.print(client.state());
+      // Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
     }
