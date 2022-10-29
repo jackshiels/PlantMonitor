@@ -4,7 +4,7 @@
 #include <PubSubClient.h>
 #include <DHT.h>
 #include <DHT_U.h>
-#include <arduino_secrets.h>
+#include "arduino_secrets.h"
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 
 // Sensors - DHT22 and Nails
@@ -17,23 +17,13 @@ int sensorVCC = 13;
 int blueLED = 2;
 DHT dht(DHTPin, DHTTYPE);   // Initialize DHT sensor.
 
-// Wifi and MQTT
-//#include "arduino_secrets.h" 
-/*
-**** please enter your sensitive data in the Secret tab/arduino_secrets.h
-**** using format below
+// Grab the passwords from my secrets file.
+const char* ssid     = SECRET_SSID;
+const char* password = SECRET_PASS;
+const char* mqttuser = SECRET_MQTTUSER;
+const char* mqttpass = SECRET_MQTTPASS;
 
-#define SECRET_SSID "ssid name"
-#define SECRET_PASS "ssid password"
-#define SECRET_MQTTUSER "user name - eg student"
-#define SECRET_MQTTPASS "password";
- */
-
-const char* ssid     = "5GEE-Router-893N";
-const char* password = "Shellfish678*%*";
-const char* mqttuser = "student";
-const char* mqttpass = "ce2021-mqtt-forget-whale";
-
+// Create the web and MQTT access classes and variables
 ESP8266WebServer server(80);
 const char* mqtt_server = "mqtt.cetools.org";
 WiFiClient espClient;
