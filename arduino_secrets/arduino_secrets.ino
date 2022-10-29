@@ -36,9 +36,9 @@ int value = 0;
 Timezone GB;
 
 void setup() {
-  // Set up LED to be controllable via broker
-  // Initialize the BUILTIN_LED pin as an output
-  // Turn the LED off by making the voltage HIGH
+  // Set the pin mode of the built in LED to digital
+  // and high on start, with the ability to MQTT signal
+  // to the LED to turn it on and off.
   pinMode(BUILTIN_LED, OUTPUT);     
   digitalWrite(BUILTIN_LED, HIGH);  
 
