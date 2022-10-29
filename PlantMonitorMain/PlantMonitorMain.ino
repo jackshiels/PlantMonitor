@@ -4,7 +4,6 @@
 #include <PubSubClient.h>
 #include <DHT.h>
 #include <DHT_U.h>
-
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 
 // Sensors - DHT22 and Nails
