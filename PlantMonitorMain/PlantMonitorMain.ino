@@ -52,7 +52,7 @@ void setup() {
   Serial.begin(115200);
   delay(100);
 
-  // start DHT sensor
+  // start DHT sensor and begin reading
   pinMode(DHTPin, INPUT);
   dht.begin();
 
@@ -78,13 +78,14 @@ void loop() {
 }
 
 void readMoisture(){
+  // Requests the moisture level
   // power the sensor
   digitalWrite(sensorVCC, HIGH);
   digitalWrite(blueLED, LOW);
   delay(100);
-  // read the value from the sensor:
+  // read the value from the sensor by grabbing its analog value
   Moisture = analogRead(soilPin);         
-  //Moisture = map(analogRead(soilPin), 0,320, 0, 100);    // note: if mapping work out max value by dipping in water     
+  // Moisture = map(analogRead(soilPin), 0,320, 0, 100);    // note: if mapping work out max value by dipping in water     
   //stop power
   digitalWrite(sensorVCC, LOW);  
   digitalWrite(blueLED, HIGH);
@@ -120,7 +121,8 @@ void syncDate() {
 }
 
 void startWebserver() {
-  // when connected and IP address obtained start HTTP server
+  // When connected and IP address obtained start HTTP server
+  // Sets delegate functions for server actions of GET
   server.on("/", handle_OnConnect);
   server.onNotFound(handle_NotFound);
   server.begin();
@@ -128,31 +130,42 @@ void startWebserver() {
 }
 
 void sendMQTT() {
+  // Check for a valid connection
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
 
-  Temperature = dht.readTemperature(); // Gets the values of the temperature
+  // Get additional sensor values
+  ReadDHTValues();
+
+  // Sends the values of the temperature
   snprintf (msg, 50, "%.1f", Temperature);
   Serial.print("Publish message for t: ");
   Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/temperature", msg);
 
-  Humidity = dht.readHumidity(); // Gets the values of the humidity
+  // Sends the values of the humidity
   snprintf (msg, 50, "%.0f", Humidity);
   Serial.print("Publish message for h: ");
   Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/humidity", msg);
 
-  //Moisture = analogRead(soilPin);   // moisture read by readMoisture function
+  // Moisture = analogRead(soilPin);   // moisture read by readMoisture function
   snprintf (msg, 50, "%.0i", Moisture);
   Serial.print("Publish message for m: ");
   Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/moisture", msg);
 }
 
+void ReadDHTValues(){
+  // Get the temperature and humidity DHT values
+  Temperature = dht.readTemperature();
+  Humidity = dht.readHumidity();  
+}
+
 void callback(char* topic, byte* payload, unsigned int length) {
+  // Receives a message from MQTT
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
