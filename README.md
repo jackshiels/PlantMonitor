@@ -7,4 +7,6 @@ This project is split into three parts:
 - Deployment into the CASA lab
 
 # Conceptualisation and Experimentation
-![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/sketches.jpeg?raw=true)
+While some parts of this project were given via specification, others were drawn on through conceptualisation 
+
+![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/sketches_composite.jpeg?raw=true)
