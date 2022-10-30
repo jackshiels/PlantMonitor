@@ -87,7 +87,11 @@ void readMoisture(){
   delay(100);
   // read the value from the sensor by grabbing its analog value
   Moisture = analogRead(soilPin);         
-  // Moisture = map(analogRead(soilPin), 0,320, 0, 100);    // note: if mapping work out max value by dipping in water     
+  // Moisture = map(analogRead(soilPin), 0,320, 0, 100);    // note: if mapping work out max value by dipping in water 
+  // Alert the other Arduino via Tx/Rx
+  if (Moisture < 100){
+    Serial.print(1);
+  }    
   //stop power
   digitalWrite(sensorVCC, LOW);  
   digitalWrite(blueLED, HIGH);
@@ -143,20 +147,14 @@ void sendMQTT() {
 
   // Sends the values of the temperature
   snprintf (msg, 50, "%.1f", Temperature);
-  // Serial.print("Publish message for t: ");
-  // Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/temperature", msg);
 
   // Sends the values of the humidity
   snprintf (msg, 50, "%.0f", Humidity);
-  // Serial.print("Publish message for h: ");
-  // Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/humidity", msg);
 
   // Moisture = analogRead(soilPin);   // moisture read by readMoisture function
   snprintf (msg, 50, "%.0i", Moisture);
-  // Serial.print("Publish message for m: ");
-  // Serial.println(msg);
   client.publish("student/CASA0014/plant/ucfnhie/moisture", msg);
 }
 
@@ -164,11 +162,6 @@ void ReadDHTValues(){
   // Get the temperature and humidity DHT values
   Temperature = dht.readTemperature();
   Humidity = dht.readHumidity();
-
-  // Alert the other Arduino via Tx/Rx
-  if (Temperature < 25){
-    Serial.print(1);
-  }
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
