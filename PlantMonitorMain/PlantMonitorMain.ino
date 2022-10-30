@@ -166,18 +166,10 @@ void ReadDHTValues(){
 
 void callback(char* topic, byte* payload, unsigned int length) {
   // Receives a message from MQTT
-  // Serial.print("Message arrived [");
-  // Serial.print(topic);
-  // Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    // Serial.print((char)payload[i]);
-  }
-  // Serial.println();
-
-  // Switch on the LED if an 1 was received as first character
+  // Activates servo if character is 1
   if ((char)payload[0] == '1') {
     digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
-    // but actually the LED is on; this is because it is active low on the ESP-01)
+    Serial.print(1);
   } else {
     digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
   }
@@ -195,7 +187,7 @@ void reconnect() {
     if (client.connect(clientId.c_str(), mqttuser, mqttpass)) {
       // Serial.println("connected");
       // ... and resubscribe
-      client.subscribe("student/CASA0014/plant/ucfnhie/inTopic");
+      client.subscribe("student/CASA0014/plant/ucfnhie/activateServo");
     } else {
       // Serial.print("failed, rc=");
       // Serial.print(client.state());

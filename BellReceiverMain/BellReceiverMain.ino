@@ -33,8 +33,6 @@ void loop()
         servo.write(angle);           
         delay(15);       
       } 
-      // Reset the byte for the next signal
-      incomingByte = '0';
     }
     else {
       Serial.println("0");
