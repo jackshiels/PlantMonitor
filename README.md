@@ -35,7 +35,7 @@ This build required:
 
 A breadboard mockup of the DHT sensor is shown below:
 
-![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/sensor_breadboard.jpeg?raw=true)
+![Breadboard concept](https://github.com/jackshiels/PlantMonitor/blob/main/Images/sensor_breadboard.jpeg?raw=true)
 
 The final design is shown below. 
 
@@ -45,7 +45,7 @@ Additionally, an Arduino Uno was added to handle the flag servo. This servo take
 
 Lastly, a Raspberry Pi was added to capture MQTT data in a database and report via a web dashboard. This dashboard stack was composed of InfluxDB for data storage and management, Telegraf for MQTT data capture, and Grafana for the presentation of this captured data.
 
-![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/final_setup.jpeg?raw=true)
+![Setup overview](https://github.com/jackshiels/PlantMonitor/blob/main/Images/final_setup.jpeg?raw=true)
 
 ## Code
 
@@ -123,3 +123,6 @@ void loop()
     }
 }
 ```
+# Deployment into the CASA lab
+
+![CASA Installation](https://github.com/jackshiels/PlantMonitor/blob/main/Images/final_installation.jpeg?raw=true)
