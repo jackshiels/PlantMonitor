@@ -66,7 +66,6 @@ void loop() {
   delay(10000);
   readMoisture();
   sendMQTT();
-  // Serial.println(GB.dateTime("H:i:s")); // UTC.dateTime("l, d-M-y H:i:s.v T")
 
   // Send the Rx signal to the other Arduino
   client.loop();
@@ -74,5 +73,53 @@ void loop() {
 ```
 Additionally, a callback function `callback` is provided to allow remote activation of the flag servo. This method can receive an MQTT signal at the topic `activateServo`, which is subscribed to in the `reconnect` method.
 
+```
+void callback(char* topic, byte* payload, unsigned int length) {
+  // Receives a message from MQTT
+  // Activates servo if character is 1
+  if ((char)payload[0] == '1') {
+    digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
+    Serial.print(1);
+  } else {
+    digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
+  }
+}
+```
+
 ## FlagReceiverMain
 
+FlagReceiverMain is the script that is run on the Arduino Uno. The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Once received, the servo is rotated 120 degrees and back again.
+
+```
+void loop() 
+{ 
+  // If the serial is set up
+  if (Serial.available() > 0){
+    // Read the byte from the Huzzah
+    incomingByte = Serial.read();
+    Serial.println(incomingByte);
+    // If activated
+    if (incomingByte == '1'){
+      Serial.println("Success!");
+      // scan from 0 to 120 degrees
+      for(angle = 10; angle < 120; angle++)  
+      {                                  
+        servo.write(angle);               
+        delay(15);                   
+      } 
+      // now scan back from 120 to 0 degrees
+      for(angle = 120; angle > 10; angle--)    
+      {                                
+        servo.write(angle);           
+        delay(15);       
+      } 
+    }
+    else {
+      Serial.println("0");
+    }
+  }
+  else {
+      Serial.println("0");
+    }
+}
+```
