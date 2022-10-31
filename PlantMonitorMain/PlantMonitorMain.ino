@@ -89,33 +89,23 @@ void readMoisture(){
   Moisture = analogRead(soilPin);         
   // Moisture = map(analogRead(soilPin), 0,320, 0, 100);    // note: if mapping work out max value by dipping in water 
   // Alert the other Arduino via Tx/Rx
-  if (Moisture < 100){
+  if (Moisture < 40){
     Serial.print(1);
   }    
   //stop power
   digitalWrite(sensorVCC, LOW);  
   digitalWrite(blueLED, HIGH);
   delay(100);
-  // Serial.print("Wet ");
-  // Serial.println(Moisture);   // read the value from the nails
 }
 
 void startWifi() {
   // We start by connecting to a WiFi network
-  // Serial.println();
-  // Serial.print("Connecting to ");
-  // Serial.println(ssid);
   WiFi.begin(ssid, password);
 
   // check to see if connected and wait until you are
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    // Serial.print(".");
   }
-  // Serial.println("");
-  // Serial.println("WiFi connected");
-  // Serial.print("IP address: ");
-  // Serial.println(WiFi.localIP());
 }
 
 void syncDate() {
@@ -132,7 +122,6 @@ void startWebserver() {
   server.on("/", handle_OnConnect);
   server.onNotFound(handle_NotFound);
   server.begin();
-  // Serial.println("HTTP server started");
 }
 
 void sendMQTT() {
@@ -178,20 +167,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
-    // Serial.print("Attempting MQTT connection...");
     // Create a random client ID
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
     
     // Attempt to connect with clientID, username and password
     if (client.connect(clientId.c_str(), mqttuser, mqttpass)) {
-      // Serial.println("connected");
       // ... and resubscribe
       client.subscribe("student/CASA0014/plant/ucfnhie/activateServo");
     } else {
-      // Serial.print("failed, rc=");
-      // Serial.print(client.state());
-      // Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
     }

@@ -5,6 +5,7 @@ Servo servo;
 int angle = 10;
 char incomingByte = "0";
 
+// Manages the servo Arduino
 void setup() {
   servo.attach(13);
   servo.write(angle);
