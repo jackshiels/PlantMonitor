@@ -23,6 +23,7 @@ This section details how to create the device, and what was done to build its fu
 
 This build required:
 - An Adafruit Huzzah with ESP8266 WiFi board
+- A custom soldered shield for the Huzzah board
 - An Arduino Nano
 - A Raspberry Pi
 - A DHT temperature and humidity sensor
@@ -42,7 +43,12 @@ On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND),
 
 Additionally, an Arduino Uno was added to handle the flag servo. This servo takes VCC, GND, and a single data pin to address servo rotation. A single pin was connected from the Tx on the Huzzah to the Rx on the Arduino Uno. Serial signals were routed through this connection to activate the servo on the Arduino Uno.
 
-Lastly, a Raspberry Pi was added to capture MQTT data in a database and report via a web dashboard. This dashboard was composed of InfluxDB for data storage management, Telegraf for MQTT data capture, and Grafana for presentation of this captured data.
+Lastly, a Raspberry Pi was added to capture MQTT data in a database and report via a web dashboard. This dashboard stack was composed of InfluxDB for data storage and management, Telegraf for MQTT data capture, and Grafana for the presentation of this captured data.
 
 ![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/final_setup.jpeg?raw=true)
 
+## Code
+
+This repo has two main Arduino source files. These are:
+- PlantMonitorMain.ino: manages the Huzzah, its WiFi, data capture, and serial communication with the Arduino Uno
+- FlagReceiverMain: receives Huzzah signals via serial and controls the flag servo on the Arduino Uno
