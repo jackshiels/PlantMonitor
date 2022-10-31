@@ -126,3 +126,7 @@ void loop()
 # Deployment into the CASA lab
 
 ![CASA Installation](https://github.com/jackshiels/PlantMonitor/blob/main/Images/final_installation.jpeg?raw=true)
+
+The plant monitor system was deployed within the CASA lab on 31 October 2022. A USB dongle was connected to a power plug, from which the two Arduinos were powered. An initial moisture test was conducted by taking a dry plant as a base reading, then inserting the two nails into a glass of water. A minimum value of 9 was recorded, and a maximum of 300.
+
+![MQTT](https://github.com/jackshiels/PlantMonitor/blob/main/Images/mqtt.png?raw=true)
