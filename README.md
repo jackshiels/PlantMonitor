@@ -123,6 +123,19 @@ void loop()
     }
 }
 ```
+## MQTT and Raspberry Pi setup
+
+A Raspberry Pi was installed to capture and present sensor data. The Pi was set up to connect to a local network, and updated to the latest software. Three key software components were installed:
+- InfluxDB, for storing time series data
+- Telegraf, for capturing MQTT data
+- Grafana, for presenting the data on a dashboard
+
+InfluxDB was set up with a Telegraf data connector that could interpret the MQTT data. This data was transported into a bucket entitled 'mqtt-data'. Environment variables were written into the`/etc/profile/.profile` to ensure that Telegraf knew the address of the InfluxDB host, its token, and the organisation name wherein the bucket was located.
+
+Grafana was then set up to grab data from the `mqtt-data` bucket, and a dashboard was designed:
+
+![Grafana reading](https://github.com/jackshiels/PlantMonitor/blob/main/Images/grafana.jpeg?raw=true)
+
 # Deployment into the CASA lab
 
 ![CASA Installation](https://github.com/jackshiels/PlantMonitor/blob/main/Images/final_installation.jpeg?raw=true)
