@@ -57,33 +57,4 @@ This repo has two main Arduino source files. These are:
 
 PlantMonitorMain uses several libraries. These libraries are `<ESP8266WiFi.h>` for WiFi, `<ezTime.h>` for time capture on Arduino, `<PubSubClient.h>` for MQTT access, `<DHT.h>` for the DHT sensor, and a `"arduino_secrets.h"` script to hide private WiFi details. 
 
-`void setup() {
-  // LED light setup for a push command from MQTT to turn on and off
-  pinMode(BUILTIN_LED, OUTPUT);     
-  digitalWrite(BUILTIN_LED, HIGH);  
-
-  // Set up the outputs to control the soil sensor
-  // switch and the blue LED for status indicator
-  // First: power for sensor
-  pinMode(sensorVCC, OUTPUT); 
-  digitalWrite(sensorVCC, LOW);
-  pinMode(blueLED, OUTPUT); 
-  digitalWrite(blueLED, HIGH);
-
-  // open serial connection for debug info
-  Serial.begin(115200);
-  delay(100);
-
-  // start DHT sensor and begin reading
-  pinMode(DHTPin, INPUT);
-  dht.begin();
-
-  // run initialisation functions
-  startWifi();
-  startWebserver();
-  syncDate();
-
-  // start MQTT server
-  client.setServer(mqtt_server, 1884);
-  client.setCallback(callback);
-}`
+The setup method initialises the pins, opens serial connectivity, and starts the WiFi and MQTT networking methods. The main loop operates on a 10,000ms second delay, meaning it grabs DHT and moisture data once every ten seconds. Both moisture reading and DHT data gathering are abstracted into their own methods (`ReadMoisture()` and `ReadDHTValues()`). `ReadMoisture()` does a check for the moisture threshold, which is set at 40. Once below this number, it sends a serial value of `1` to the other Arduino to activate the 'Help!' flag.
