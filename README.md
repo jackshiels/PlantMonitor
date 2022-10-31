@@ -52,3 +52,38 @@ Lastly, a Raspberry Pi was added to capture MQTT data in a database and report v
 This repo has two main Arduino source files. These are:
 - PlantMonitorMain.ino: manages the Huzzah, its WiFi, data capture, and serial communication with the Arduino Uno
 - FlagReceiverMain: receives Huzzah signals via serial and controls the flag servo on the Arduino Uno
+
+## PlantMonitorMain
+
+PlantMonitorMain uses several libraries. These libraries are `<ESP8266WiFi.h>` for WiFi, `<ezTime.h>` for time capture on Arduino, `<PubSubClient.h>` for MQTT access, `<DHT.h>` for the DHT sensor, and a `"arduino_secrets.h"` script to hide private WiFi details. 
+
+`void setup() {
+  // LED light setup for a push command from MQTT to turn on and off
+  pinMode(BUILTIN_LED, OUTPUT);     
+  digitalWrite(BUILTIN_LED, HIGH);  
+
+  // Set up the outputs to control the soil sensor
+  // switch and the blue LED for status indicator
+  // First: power for sensor
+  pinMode(sensorVCC, OUTPUT); 
+  digitalWrite(sensorVCC, LOW);
+  pinMode(blueLED, OUTPUT); 
+  digitalWrite(blueLED, HIGH);
+
+  // open serial connection for debug info
+  Serial.begin(115200);
+  delay(100);
+
+  // start DHT sensor and begin reading
+  pinMode(DHTPin, INPUT);
+  dht.begin();
+
+  // run initialisation functions
+  startWifi();
+  startWebserver();
+  syncDate();
+
+  // start MQTT server
+  client.setServer(mqtt_server, 1884);
+  client.setCallback(callback);
+}`
