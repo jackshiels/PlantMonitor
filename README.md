@@ -144,3 +144,6 @@ The plant monitor system was deployed within the CASA lab on 31 October 2022. A 
 
 ![MQTT](https://raw.githubusercontent.com/jackshiels/PlantMonitor/main/Images/mqtt.jpg)
 
+The project was tested successfully using both the moisture threshold and an MQTT signal. Try setting it up at home, and feel free to branch off this repo too!
+
+Jack Shiels
