@@ -3,7 +3,7 @@ This repo documents the process and resources used to develop a fully functionin
 
 This project is split into three parts:
 - Conceptualisation and experimentation
-- Development and testing
+- Development and testing (includes a list of parts and an explanation of the code)
 - Deployment into the CASA lab
 
 # Conceptualisation and Experimentation
@@ -33,4 +33,16 @@ This build required:
 - A 3D printed case for the sensor
 
 A breadboard mockup of the DHT sensor is shown below:
+
 ![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/sensor_breadboard.jpeg?raw=true)
+
+The final design is shown below. 
+
+On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND), and a data pin. Furthermore, several resistors were soldered onto a circuit that has two wires wrapped around a pair of nails. The circuit created by moisture within the soil passes through these resistors and gets read by the Huzzah.
+
+Additionally, an Arduino Uno was added to handle the flag servo. This servo takes VCC, GND, and a single data pin to address servo rotation.
+
+Lastly, a Raspberry Pi was added to capture MQTT data in a database and report via a web dashboard. This dashboard was composed of InfluxDB for data storage management, Telegraf for MQTT data capture, and Grafana for presentation of this captured data.
+
+![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/final_setup.jpeg?raw=true)
+
