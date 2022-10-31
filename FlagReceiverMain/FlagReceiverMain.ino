@@ -1,6 +1,6 @@
 #include <Servo.h>
 
-// Declare servo class and incoing serial value
+// Declare servo class and incoming serial value
 Servo servo;
 int angle = 10;
 char incomingByte = "0";
