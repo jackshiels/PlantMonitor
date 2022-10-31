@@ -134,7 +134,7 @@ InfluxDB was set up with a Telegraf data connector that could interpret the MQTT
 
 Grafana was then set up to grab data from the `mqtt-data` bucket, and a dashboard was designed:
 
-![Grafana](https://github.com/jackshiels/PlantMonitor/blob/main/Images/grafana.jpeg?raw=true)
+![Grafana](https://github.com/jackshiels/PlantMonitor/blob/main/Images/grafana.jpg?raw=true)
 
 # Deployment into the CASA lab
 
@@ -142,5 +142,5 @@ Grafana was then set up to grab data from the `mqtt-data` bucket, and a dashboar
 
 The plant monitor system was deployed within the CASA lab on 31 October 2022. A USB dongle was connected to a power plug, from which the two Arduinos were powered. An initial moisture test was conducted by taking a dry plant as a base reading, then inserting the two nails into a glass of water. A minimum value of 9 was recorded, and a maximum of 300.
 
-![MQTT](https://github.com/jackshiels/PlantMonitor/blob/main/Images/fmqtt.jpeg?raw=true)
+![MQTT](https://raw.githubusercontent.com/jackshiels/PlantMonitor/main/Images/mqtt.jpg)
 
