@@ -15,3 +15,22 @@ While some parts of this project were given via specification, others were drawn
 ![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/sketches_composite.jpeg?raw=true)
 
 The first idea was interesting, but would require a very powerful servo. Such a servo would be challenging to power from a small Arduino board. The second idea held promise, but coordination between students to build this plant network was not possible due to varying schedules. Lastly, the bell ringer idea was again hamstrung by the need for a powerful ringing servo motor, which would not be easy to integrate at the time.
+
+The final idea was to extend the plant monitor tutorial to not only collect data, but also act on that data with a servo. This servo would power a flag on the plant that would wave when moisture dropped below a certain level (or a signal was sent to the device). Experimentation began with this idea in mind.
+
+# Development and testing
+This section details how to create the device, and what was done to build its functionality.
+
+This build required:
+- An Adafruit Huzzah with ESP8266 WiFi board
+- An Arduino Nano
+- A Raspberry Pi
+- A DHT temperature and humidity sensor
+- Four male-to-male wire connectors
+- A SG90-HV servo
+- Two open wires for the moisture sensor
+- Two nails for moisture sensing
+- A 3D printed case for the sensor
+
+A breadboard mockup of the DHT sensor is shown below:
+![Concept art](https://github.com/jackshiels/PlantMonitor/blob/main/Images/sensor_breadboard.jpeg?raw=true)
