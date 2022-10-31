@@ -59,7 +59,8 @@ PlantMonitorMain uses several libraries. These libraries are `<ESP8266WiFi.h>` f
 
 The setup method initialises the pins, opens serial connectivity, and starts the WiFi and MQTT networking methods. The main loop operates on a 10,000ms second delay, meaning it grabs DHT and moisture data once every ten seconds. Both moisture reading and DHT data gathering are abstracted into their own methods (`ReadMoisture()` and `ReadDHTValues()`). `ReadMoisture()` does a check for the moisture threshold, which is set at 40. Once below this number, it sends a serial value of `1` to the other Arduino to activate the 'Help!' flag.
 
-`void loop() {
+```
+void loop() {
   // handler for receiving requests to webserver
   server.handleClient();
   delay(10000);
@@ -69,6 +70,9 @@ The setup method initialises the pins, opens serial connectivity, and starts the
 
   // Send the Rx signal to the other Arduino
   client.loop();
-}`
+}
+```
+Additionally, a callback function `callback` is provided to allow remote activation of the flag servo. This method can receive an MQTT signal at the topic `activateServo`, which is subscribed to in the `reconnect` method.
 
+## FlagReceiverMain
 
