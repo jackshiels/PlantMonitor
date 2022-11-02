@@ -134,7 +134,7 @@ InfluxDB was set up with a Telegraf data connector that could interpret the MQTT
 
 Grafana was then set up to grab data from the `mqtt-data` bucket, and a dashboard was designed:
 
-![Grafana](https://github.com/jackshiels/PlantMonitor/blob/main/Images/grafana.jpg?raw=true)
+![Grafana](https://github.com/jackshiels/PlantMonitor/blob/main/Images/grafana2.png?raw=true)
 
 # Deployment into the CASA lab
 
