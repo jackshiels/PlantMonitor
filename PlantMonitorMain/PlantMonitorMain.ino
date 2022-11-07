@@ -70,7 +70,7 @@ void setup() {
 void loop() {
   // handler for receiving requests to webserver
   server.handleClient();
-  delay(10000);
+  delay(1000);
   readMoisture();
   sendMQTT();
   // Serial.println(GB.dateTime("H:i:s")); // UTC.dateTime("l, d-M-y H:i:s.v T")
@@ -89,9 +89,13 @@ void readMoisture(){
   Moisture = analogRead(soilPin);         
   // Moisture = map(analogRead(soilPin), 0,320, 0, 100);    // note: if mapping work out max value by dipping in water 
   // Alert the other Arduino via Tx/Rx
-  if (Moisture < 40){
-    Serial.print(1);
-  }    
+  // If moisture is good, send 0. Else, send 1.
+  //if (Moisture < 40){
+    //Serial.print(1);
+  //}
+  //else{
+    //Serial.print(0);
+  //}
   //stop power
   digitalWrite(sensorVCC, LOW);  
   digitalWrite(blueLED, HIGH);
@@ -159,6 +163,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if ((char)payload[0] == '1') {
     digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
     Serial.print(1);
+  }
+  else if ((char)payload[0] == '0'){
+    Serial.print(0);
   } else {
     digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
   }
