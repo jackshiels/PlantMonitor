@@ -88,40 +88,34 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 ## FlagReceiverMain
 
-FlagReceiverMain is the script that is run on the Arduino Uno. The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Once received, the servo is rotated 120 degrees and back again.
+FlagReceiverMain is the script that is run on the Arduino Uno. The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Originally, the servo was set to rotate 120 degrees and back again on a loop when moisture was low. However, some feedback was given to make the flag raise when moisture levels are poor, and lower again after sufficient watering. The new code is shown below. If the moisture level is low, a '1' serial signal is sent to raise the flag. Once moisture drops, a '0' signal is sent to lower it back to its original state. Below is a snippet of the core flag raising logic:
 
 ```
-void loop() 
-{ 
-  // If the serial is set up
-  if (Serial.available() > 0){
+if (Serial.available() > 0){
     // Read the byte from the Huzzah
     incomingByte = Serial.read();
     Serial.println(incomingByte);
     // If activated
-    if (incomingByte == '1'){
-      Serial.println("Success!");
+    if (incomingByte == '1'
+    && angle == 10){
+      Serial.println("Moisture level: low");
       // scan from 0 to 120 degrees
       for(angle = 10; angle < 120; angle++)  
       {                                  
         servo.write(angle);               
         delay(15);                   
       } 
-      // now scan back from 120 to 0 degrees
+    }
+    else if (incomingByte == '0'
+    && angle == 120){
+      Serial.println("Moisture level: good");
+      // Run the servo back down 120 degrees
       for(angle = 120; angle > 10; angle--)    
       {                                
         servo.write(angle);           
         delay(15);       
       } 
     }
-    else {
-      Serial.println("0");
-    }
-  }
-  else {
-      Serial.println("0");
-    }
-}
 ```
 ## MQTT and Raspberry Pi setup
 
@@ -144,6 +138,12 @@ The plant monitor system was deployed within the CASA lab on 31 October 2022. A 
 
 ![MQTT](https://raw.githubusercontent.com/jackshiels/PlantMonitor/main/Images/mqtt.jpg)
 
-The project was tested successfully using both the moisture threshold and an MQTT signal. Try setting it up at home, and feel free to branch off this repo too!
+The project was tested successfully using both the moisture threshold and an MQTT signal.
+
+## Long-term support considerations
+
+TODO
+
+Try setting it up at home, and feel free to branch off this repo too!
 
 Jack Shiels
