@@ -45,6 +45,10 @@ Additionally, an Arduino Uno was added to handle the flag servo. This servo take
 
 Lastly, a Raspberry Pi was added to capture MQTT data in a database and report via a web dashboard. This dashboard stack was composed of InfluxDB for data storage and management, Telegraf for MQTT data capture, and Grafana for the presentation of this captured data.
 
+Below is a technical diagram of the design, followed by a photograph of the real-world components.
+
+![Technical diagram](https://user-images.githubusercontent.com/43108815/201432659-ec17beb9-236b-40c9-b7e0-1f251710d830.png)
+
 ![Setup overview](https://github.com/jackshiels/PlantMonitor/blob/main/Images/final_setup.jpeg?raw=true)
 
 ## Code
