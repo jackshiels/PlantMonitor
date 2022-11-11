@@ -48,7 +48,7 @@ A breadboard mockup of the DHT sensor is shown below:
 
 A technical diagram is provided below, followed by a photograph of the finished project. 
 
-On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND), and a data pin. The DHT sensor requires a 10k Ohm resistor to pull up the data and VCC pins. The moisture sensor is built by connecting the first nail to digital output GPIO 013 on the Huzzah. This digital output sends a current to the first nail, while the second nail is connected to the analog input on pin A0. The sensor works by reading the current from the first nail as an analog signal in A0, as captured by the second nail. A lower level of resistance between the nails (due to increased moisture) will lead to higher analog readings on A0, while greater resistance (from less moisture) will lower the value.
+On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND), and a data pin. The DHT sensor requires a 10k Ohm resistor to pull up the data and VCC pins [[1]](#1). The moisture sensor is built by connecting the first nail to digital output GPIO 013 on the Huzzah. This digital output sends a current to the first nail, while the second nail is connected to the analog input on pin A0. The sensor works by reading the current from the first nail as an analog signal in A0, as captured by the second nail. A lower level of resistance between the nails (due to increased moisture) will lead to higher analog readings on A0, while greater resistance (from less moisture) will lower the value.
 
 ![Nails](https://github.com/jackshiels/PlantMonitor/blob/main/Images/nails.jpg?raw=true)
 
@@ -106,7 +106,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 ## FlagReceiverMain
 
-FlagReceiverMain is the script that is run on the Arduino Uno. The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Originally, the servo was set to rotate 120 degrees and back again on a loop when moisture was low. However, some feedback was given to make the flag raise when moisture levels are poor, and lower again after sufficient watering. The new code is shown below. If the moisture level is low, a '1' serial signal is sent to raise the flag. Once moisture drops, a '0' signal is sent to lower it back to its original state. Below is a snippet of the core flag raising logic:
+FlagReceiverMain is the script that is run on the Arduino Uno. The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Originally, the servo was set to rotate 120 degrees and back again on a loop when moisture was low. However, some feedback was given to make the flag raise when moisture levels are poor, and lower again after a sufficient watering. The new code is shown below. If the moisture level is low, a '1' serial signal is sent to raise the flag. Once moisture drops, a '0' signal is sent to lower it back to its original state. Below is a snippet of the core flag raising logic:
 
 ```
 if (Serial.available() > 0){
@@ -137,14 +137,14 @@ if (Serial.available() > 0){
 ```
 ## MQTT and Raspberry Pi setup
 
-A Raspberry Pi was installed to capture and present sensor data. The Pi was set up to connect to a local network, and updated to the latest software. Three key software components were installed:
+A Raspberry Pi should be installed to capture and present sensor data. The Pi must be connected to a local network, and updated to the latest software. Three key software components should be installed:
 - InfluxDB, for storing time series data
 - Telegraf, for capturing MQTT data
 - Grafana, for presenting the data on a dashboard
 
-InfluxDB was set up with a Telegraf data connector that could interpret the MQTT data. This data was transported into a bucket entitled 'mqtt-data'. Environment variables were written into the`/etc/profile/.profile` to ensure that Telegraf knew the address of the InfluxDB host, its token, and the organisation name wherein the bucket was located.
+InfluxDB should be set up with a Telegraf data connector that can interpret the MQTT data. This data should be transported into a bucket entitles 'mqtt-data'. Environment variables should ideally be written into the`/etc/profile/.profile` document to ensure that Telegraf knows the address of the InfluxDB host, its token, and the organisation name wherein the bucket is located.
 
-Grafana was then set up to grab data from the `mqtt-data` bucket, and a dashboard was designed:
+Grafana should then be configured to grab data from the `mqtt-data` bucket. From here, a dashboard can be designed:
 
 ![Grafana](https://github.com/jackshiels/PlantMonitor/blob/main/Images/grafana2.png?raw=true)
 
@@ -165,3 +165,7 @@ The project was tested successfully using both the moisture threshold and an MQT
 Try setting it up at home, and feel free to branch off this repo too!
 
 Jack Shiels
+
+# References
+<a id="1">[1]</a>
+https://create.arduino.cc/projecthub/pibots555/how-to-connect-dht11-sensor-with-arduino-uno-f4d239
