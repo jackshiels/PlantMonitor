@@ -26,22 +26,31 @@ This build required:
 - A custom soldered shield for the Huzzah board
 - An Arduino Nano
 - A Raspberry Pi
+
+The following sensor equipment is used:
 - A DHT temperature and humidity sensor
-- Four male-to-male wire connectors
 - A SG90-HV servo
 - Two open wires for the moisture sensor
 - Two nails for moisture sensing
+- 2x 10k Ohm resistors
+- 1x 200 Ohm resistor
+- 1x 100 Ohm resistor
+
+Lastly, several miscellaneous items are required:
 - A 3D printed case for the sensor
+- Masking tape to secure the Huzzah in place
+
+If you are completing this project with a Huzzah custom shield, you will need 4x male-to-male jumper cables. If you do not have a shield, you will need at least 11x jumper cables (depending on how well you can wire the resistor connections!).
 
 A breadboard mockup of the DHT sensor is shown below:
 
 ![Breadboard concept](https://github.com/jackshiels/PlantMonitor/blob/main/Images/sensor_breadboard.jpeg?raw=true)
 
-The final design is shown below. 
+A technical diagram is provided below, followed by a photograph of the finished project. 
 
-On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND), and a data pin. Furthermore, several resistors were soldered onto a circuit that has two wires wrapped around a pair of nails. The circuit created by moisture within the soil passes through these resistors and gets read by the Huzzah.
+On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND), and a data pin. The DHT sensor requires a 10k Ohm resistor to pull up the data and VCC pins. The moisture sensor is built by connecting the first nail to digital output GPIO 013 on the Huzzah. This digital output sends a current to the first nail, while the second nail is connected to the analog input on pin A0. The sensor works by reading the current from the first nail as an analog signal in A0, as captured by the second nail. A lower level of resistance between the nails (due to increased moisture) will lead to higher analog readings on A0, while greater resistance (from less moisture) will lower the value.
 
-Additionally, an Arduino Uno was added to handle the flag servo. This servo takes VCC, GND, and a single data pin to address servo rotation. A single pin was connected from the Tx on the Huzzah to the Rx on the Arduino Uno. Serial signals were routed through this connection to activate the servo on the Arduino Uno.
+Additionally, an Arduino Uno is used to control the flag motor. This servo takes VCC, GND, and a single data pin to address servo rotation. A single jumper cable is connected from the Tx port on the Huzzah to the Rx on the Arduino Uno. Serial signals were routed through this connection to activate the servo on the Arduino Uno.
 
 Lastly, a Raspberry Pi was added to capture MQTT data in a database and report via a web dashboard. This dashboard stack was composed of InfluxDB for data storage and management, Telegraf for MQTT data capture, and Grafana for the presentation of this captured data.
 
