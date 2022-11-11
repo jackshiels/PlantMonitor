@@ -21,9 +21,8 @@ The final idea was to extend the plant monitor tutorial to not only collect data
 # Development and testing
 This section details how to create the device, and what was done to build its functionality.
 
-This build required:
-- An Adafruit Huzzah with ESP8266 WiFi board
-- A custom soldered shield for the Huzzah board
+The following boards are required:
+- An Adafruit Huzzah with ESP8266 WiFi board (with a custom soldered shield)
 - An Arduino Nano
 - A Raspberry Pi
 
@@ -39,8 +38,9 @@ The following sensor equipment is used:
 Lastly, several miscellaneous items are required:
 - A 3D printed case for the sensor
 - Masking tape to secure the Huzzah in place
+- Googly eyes for the plant (for fun!)
 
-If you are completing this project with a Huzzah custom shield, you will need 4x male-to-male jumper cables. If you do not have a shield, you will need at least 11x jumper cables (depending on how well you can wire the resistor connections!).
+If you are completing this project with a Huzzah custom shield, you will need 4x male-to-male jumper cables. If you do not have a shield, you will need at least 11x jumper cables and a breadboard (depending on how well you can wire the resistor connections).
 
 A breadboard mockup of the DHT sensor is shown below:
 
@@ -50,9 +50,9 @@ A technical diagram is provided below, followed by a photograph of the finished 
 
 On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND), and a data pin. The DHT sensor requires a 10k Ohm resistor to pull up the data and VCC pins. The moisture sensor is built by connecting the first nail to digital output GPIO 013 on the Huzzah. This digital output sends a current to the first nail, while the second nail is connected to the analog input on pin A0. The sensor works by reading the current from the first nail as an analog signal in A0, as captured by the second nail. A lower level of resistance between the nails (due to increased moisture) will lead to higher analog readings on A0, while greater resistance (from less moisture) will lower the value.
 
-Additionally, an Arduino Uno is used to control the flag motor. This servo takes VCC, GND, and a single data pin to address servo rotation. A single jumper cable is connected from the Tx port on the Huzzah to the Rx on the Arduino Uno. Serial signals were routed through this connection to activate the servo on the Arduino Uno.
+Additionally, an Arduino Uno is used to control the flag motor. This servo takes VCC, GND, and a single data pin to address servo rotation. Furthermore, a single jumper cable is connected from the Tx port on the Huzzah to the Rx on the Arduino Uno. Serial signals are routed through this connection to activate the servo on the Arduino Uno.
 
-Lastly, a Raspberry Pi was added to capture MQTT data in a database and report via a web dashboard. This dashboard stack was composed of InfluxDB for data storage and management, Telegraf for MQTT data capture, and Grafana for the presentation of this captured data.
+Lastly, a Raspberry Pi is used to capture MQTT data in a database and report via a web dashboard. This dashboard stack is composed of InfluxDB for data storage and management, Telegraf for MQTT data capture, and Grafana for the presentation of this captured data. The Raspberry Pi should be on the same WiFi network as the Huzzah.
 
 Below is a technical diagram of the design, followed by a photograph of the real-world components.
 
@@ -64,9 +64,11 @@ Below is a technical diagram of the design, followed by a photograph of the real
 
 This repo has two main Arduino source files. These are:
 - PlantMonitorMain.ino: manages the Huzzah, its WiFi, data capture, and serial communication with the Arduino Uno
-- FlagReceiverMain: receives Huzzah signals via serial and controls the flag servo on the Arduino Uno
+- FlagReceiverMain.ino: receives Huzzah signals via serial and controls the flag servo on the Arduino Uno
 
 ## PlantMonitorMain
+
+[TODO: comment code to show you understand it.]
 
 PlantMonitorMain uses several libraries. These libraries are `<ESP8266WiFi.h>` for WiFi, `<ezTime.h>` for time capture on Arduino, `<PubSubClient.h>` for MQTT access, `<DHT.h>` for the DHT sensor, and a `"arduino_secrets.h"` script to hide private WiFi details. 
 
@@ -84,6 +86,7 @@ void loop() {
   client.loop();
 }
 ```
+
 Additionally, a callback function `callback` is provided to allow remote activation of the flag servo. This method can receive an MQTT signal at the topic `activateServo`, which is subscribed to in the `reconnect` method.
 
 ```
@@ -155,7 +158,7 @@ The project was tested successfully using both the moisture threshold and an MQT
 
 ## Long-term support considerations
 
-TODO
+[TODO: go over LTS considerations.]
 
 Try setting it up at home, and feel free to branch off this repo too!
 
