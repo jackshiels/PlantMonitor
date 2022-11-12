@@ -74,6 +74,17 @@ This repo has two main Arduino source files. These are:
 
 PlantMonitorMain uses several libraries. These libraries are `<ESP8266WiFi.h>` for WiFi, `<ezTime.h>` for time capture on Arduino, `<PubSubClient.h>` for MQTT access, `<DHT.h>` for the DHT sensor, and a `"arduino_secrets.h"` script to hide private WiFi details. 
 
+NOTE: you'll need to create an arduino_secrets.h file with the following variables and place it in the same folder:
+
+```
+#define SECRET_SSID "your ssid";
+#define SECRET_PASS "your WiFi password";
+#define MQTT_SERVER "your MQTT broker address";
+#define MQTT_PORT the port of your broker;
+#define SECRET_MQTTUSER "your MQTT user";
+#define SECRET_MQTTPASS "your mqtt password";
+```
+
 The setup method initialises the pins, opens serial connectivity, and starts the WiFi and MQTT networking methods. The main loop operates on a 10,000ms second delay, meaning it grabs DHT and moisture data once every ten seconds. Both moisture reading and DHT data gathering are abstracted into their own methods (`ReadMoisture()` and `ReadDHTValues()`). `ReadMoisture()` does a check for the moisture threshold, which is set at 40. Once below this number, it sends a serial value of `1` to the other Arduino to activate the 'Help!' flag.
 
 ```
@@ -88,6 +99,8 @@ void loop() {
   client.loop();
 }
 ```
+
+The `sendMQTT()` uses a `PubsubClient` object to push data to the CASA MQTT server, based on the data topic (e.g., moisture or humidity). I also set up my own Mosquitto MQTT broker to capture data from my home plant installation. For details on how to set up your own MQTT server on Raspberry Pi, please see [[3]](#3).  
 
 Additionally, a callback function `callback` is provided to allow remote activation of the flag servo. This method can receive an MQTT signal at the topic `activateServo`, which is subscribed to in the `reconnect` method.
 
@@ -106,7 +119,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 ## FlagReceiverMain
 
-FlagReceiverMain is the script that is run on the Arduino Uno. This script was partially adapted from some sample code [[3]](3). The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Originally, the servo was set to rotate 120 degrees and back again on a loop when moisture was low. However, some feedback was given to make the flag raise when moisture levels are poor, and lower again after a sufficient watering. The new code is shown below. If the moisture level is low, a '1' serial signal is sent to raise the flag. Once moisture drops, a '0' signal is sent to lower it back to its original state. Below is a snippet of the core flag raising logic:
+FlagReceiverMain is the script that is run on the Arduino Uno. This script was partially adapted from some sample code [[4]](4). The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Originally, the servo was set to rotate 120 degrees and back again on a loop when moisture was low. However, some feedback was given to make the flag raise when moisture levels are poor, and lower again after a sufficient watering. The new code is shown below. If the moisture level is low, a '1' serial signal is sent to raise the flag. Once moisture drops, a '0' signal is sent to lower it back to its original state. Below is a snippet of the core flag raising logic:
 
 ```
 if (Serial.available() > 0){
@@ -160,7 +173,7 @@ The project was tested successfully using both the moisture threshold and an MQT
 
 ## Long-term support considerations
 
-[TODO: go over LTS considerations.]
+The plant monitor was secured onto the plant using masking tape, but this will need to be replaced at a later stage to avoid degredation. Similarly, the nails will inevitably rust, and a manufactured moisture sensor component may be better for long-term support. Lastly, the jumper cable to handle serial communication between the two boards can break if mishandled. I had to replace several jumper cables while testing. A good solution for this problem would be to buy a larger board with a 5V output for the servo, consolidating everything into a single Arduino/ESP8266.
 
 Try setting it up at home, and feel free to branch off this repo too!
 
@@ -168,10 +181,13 @@ Jack Shiels
 
 # References
 <a id="1">[1]</a>
-Yapa, M. T. (2021). <i>DHT11 & DHT22 Sensors Temperature using Arduino</i>. Available at: [https://create.arduino.cc/projecthub/MinukaThesathYapa/dht11-dht22-sensors-temperature-using-arduino-b7a8d6](https://create.arduino.cc/projecthub/MinukaThesathYapa/dht11-dht22-sensors-temperature-using-arduino-b7a8d6) (Accessed on 12 November 2022).
+Yapa, M. T. (2021). <i>DHT11 & DHT22 Sensors Temperature using Arduino</i>. Available at: [https://create.arduino.cc/projecthub/MinukaThesathYapa/dht11-dht22-sensors-temperature-using-arduino-b7a8d6](https://create.arduino.cc/projecthub/MinukaThesathYapa/dht11-dht22-sensors-temperature-using-arduino-b7a8d6) (Accessed: 12 November 2022).
 
 <a id="2">[2]</a>
-Tucker, R. (2017). <i>Moisture detection with two nails</i>. Available at: [https://www.instructables.com/Moisture-Detection-With-Two-Nails/](https://www.instructables.com/Moisture-Detection-With-Two-Nails/) (Accessed 12 November 2022).
+Tucker, R. (2017). <i>Moisture detection with two nails</i>. Available at: [https://www.instructables.com/Moisture-Detection-With-Two-Nails/](https://www.instructables.com/Moisture-Detection-With-Two-Nails/) (Accessed: 12 November 2022).
 
 <a id="3">[3]</a>
+Random Nerd Tutorials (2022). <i>Install Mosquitto MQTT broker on Raspberry Pi</i>. Available at: [https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/](https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/) (Accessed: 13 November 2022).
+
+<a id="4">[4]</a>
 Koumaris, N. (2022). <i>Using the SG90 servo motor with an arduino</i>. Available at: [https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/](https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/) (Accessed: 12 November 2022).
