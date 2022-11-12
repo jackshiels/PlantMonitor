@@ -150,16 +150,30 @@ if (Serial.available() > 0){
 ```
 ## MQTT and Raspberry Pi setup
 
-A Raspberry Pi should be installed to capture and present sensor data. The Pi must be connected to a local network, and updated to the latest software. Three key software components should be installed:
+A Raspberry Pi should be installed to capture and present sensor data. The Pi must be connected to the same local network as the Huzzah, and updated to the latest software. Three key software components should be installed:
 - InfluxDB, for storing time series data
 - Telegraf, for capturing MQTT data
 - Grafana, for presenting the data on a dashboard
 
-InfluxDB should be set up with a Telegraf data connector that can interpret the MQTT data. This data should be transported into a bucket entitled 'mqtt-data'. Environment variables should ideally be written into the`/etc/profile/.profile` document to ensure that Telegraf knows the address of the InfluxDB host, its token, and the organisation name wherein the bucket is located.
+InfluxDB can be installed via SSH terminal access to the Raspberry Pi. When setting up, ensure your organisation is set to something memorable (in this case, `telegraf` was used). Ideally, you should set up InfluxDB with a Raspberry Pi template. This can be done in the 'Settings' page. Next, create a bucket entitled `mqtt-data`. In the 'Load Data' screen, elect to create a Telegraf API token. Save this for the next step.
 
-Grafana should then be configured to grab data from the `mqtt-data` bucket. From here, a dashboard can be designed:
+InfluxDB should be set up with a Telegraf data connector that can interpret the MQTT data. This data should be transported into the 'mqtt-data' bucket. After installing Telegraf, set up its environment variables for access to InfluxDB. These environment variables should include:
+
+```
+export INFLUX_HOST=[your Pi IP address]:8086
+export INFLUX_ORG=some organisation name
+export INFLUX_TOKEN=[the token that InfluxDB provided earlier]
+```
+
+Environment variables should ideally be written into the `/etc/profile/` directory to ensure that Telegraf knows the address of the InfluxDB host, its token, and the organisation name wherein the bucket is located on device startup. You can edit this document by opening it with the following command: `sudo nano /etc/profile/`.
+
+Start Telegraf with the following command: `telegraf --config [my Raspberry Pi IP address]:8086/api/v2/telegrafs/[ID provided by InfluxDB]`.
+
+Grafana should then be configured to grab data from the `mqtt-data` bucket. After installing Grafana, create a data source that references the localhost IP `127.0.0.1:8086`. Ensure you are grabbing from the `mqtt-data` bucket. From here, a dashboard can be designed with the appropriate queries:
 
 ![Grafana](https://github.com/jackshiels/PlantMonitor/blob/main/Images/grafana2.png?raw=true)
+
+Note: some of these instructions were adapted from [[5]](#5).
 
 # Deployment into the CASA lab
 
@@ -167,7 +181,7 @@ Grafana should then be configured to grab data from the `mqtt-data` bucket. From
 
 The plant monitor system was deployed within the CASA lab on 31 October 2022. A USB dongle was connected to a power plug, from which the two Arduinos were powered. An initial moisture test was conducted by taking a dry plant as a base reading, then inserting the two nails into a glass of water. A minimum value of 9 was recorded, and a maximum of 300.
 
-![MQTT](https://github.com/jackshiels/PlantMonitor/blob/main/Images/mqtt_broker.png?raw=true)
+![MQTT](https://raw.githubusercontent.com/jackshiels/PlantMonitor/main/Images/mqtt.jpg)
 
 The project was tested successfully using both the moisture threshold and an MQTT signal.
 
@@ -191,3 +205,6 @@ Random Nerd Tutorials (2022). <i>Install Mosquitto MQTT broker on Raspberry Pi</
 
 <a id="4">[4]</a>
 Koumaris, N. (2022). <i>Using the SG90 servo motor with an arduino</i>. Available at: [https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/](https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/) (Accessed: 12 November 2022).
+
+<a id="5">[5]</a>
+UCL CASA (2022). <i>Plant-Monitor</i>. Available at: [https://workshops.cetools.org/codelabs/CASA0014-2-Plant-Monitor/#0](https://workshops.cetools.org/codelabs/CASA0014-2-Plant-Monitor/#0) (Accessed: 13 November 2022).
