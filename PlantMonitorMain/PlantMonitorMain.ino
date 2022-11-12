@@ -23,10 +23,11 @@ const char* ssid     = SECRET_SSID;
 const char* password = SECRET_PASS;
 const char* mqttuser = SECRET_MQTTUSER;
 const char* mqttpass = SECRET_MQTTPASS;
+const int mqttport = MQTT_PORT;
+const char* mqtt_server = MQTT_SERVER;
 
 // Connectivity variables
 ESP8266WebServer server(80);
-const char* mqtt_server = "mqtt.cetools.org";
 WiFiClient espClient;
 PubSubClient client(espClient);
 long lastMsg = 0;
@@ -63,7 +64,7 @@ void setup() {
   syncDate();
 
   // start MQTT server
-  client.setServer(mqtt_server, 1884);
+  client.setServer(mqtt_server, mqttport);
   client.setCallback(callback);
 }
 
@@ -73,7 +74,6 @@ void loop() {
   delay(1000);
   readMoisture();
   sendMQTT();
-  // Serial.println(GB.dateTime("H:i:s")); // UTC.dateTime("l, d-M-y H:i:s.v T")
 
   // Send the Rx signal to the other Arduino
   client.loop();
@@ -86,16 +86,7 @@ void readMoisture(){
   digitalWrite(blueLED, LOW);
   delay(100);
   // read the value from the sensor by grabbing its analog value
-  Moisture = analogRead(soilPin);         
-  // Moisture = map(analogRead(soilPin), 0,320, 0, 100);    // note: if mapping work out max value by dipping in water 
-  // Alert the other Arduino via Tx/Rx
-  // If moisture is good, send 0. Else, send 1.
-  //if (Moisture < 40){
-    //Serial.print(1);
-  //}
-  //else{
-    //Serial.print(0);
-  //}
+  Moisture = analogRead(soilPin);        
   //stop power
   digitalWrite(sensorVCC, LOW);  
   digitalWrite(blueLED, HIGH);

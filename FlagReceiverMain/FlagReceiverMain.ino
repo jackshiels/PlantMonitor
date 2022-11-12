@@ -43,11 +43,11 @@ void loop()
       } 
     }
     else {
-      Serial.println("No signal");
+      Serial.println("No signal compatible");
     }
   }
   else {
-      Serial.println("No signal");
+      Serial.println("No signal detected via Rx");
     }
 }
 
