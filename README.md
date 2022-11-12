@@ -48,7 +48,7 @@ A breadboard mockup of the DHT sensor is shown below:
 
 A technical diagram is provided below, followed by a photograph of the finished project. 
 
-On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND), and a data pin. The DHT sensor requires a 10k Ohm resistor to pull up the data and VCC pins [[1]](#1). The moisture sensor is built by connecting the first nail to digital output GPIO 013 on the Huzzah. This digital output sends a current to the first nail, while the second nail is connected to the analog input on pin A0. The sensor works by reading the current from the first nail as an analog signal in A0, as captured by the second nail. A lower level of resistance between the nails (due to increased moisture) will lead to higher analog readings on A0, while greater resistance (from less moisture) will lower the value.
+On the Adafruit Huzzah, the DHT sensor requires power (VCC), a ground pin (GND), and a data pin. The DHT sensor requires a 10k Ohm resistor to pull up the data and VCC pins [[1]](#1). The moisture sensor is built by connecting the first nail to digital output GPIO 013 on the Huzzah. This digital output sends a current to the first nail, while the second nail is connected to the analog input on pin A0. The sensor works by reading the current from the first nail as an analog signal in A0, as captured by the second nail [[2]](#2). A lower level of resistance between the nails (due to increased moisture) will lead to higher analog readings on A0, while greater resistance (from less moisture) will lower the value.
 
 ![Nails](https://github.com/jackshiels/PlantMonitor/blob/main/Images/nails.jpg?raw=true)
 
@@ -168,4 +168,7 @@ Jack Shiels
 
 # References
 <a id="1">[1]</a>
-https://create.arduino.cc/projecthub/pibots555/how-to-connect-dht11-sensor-with-arduino-uno-f4d239
+[https://create.arduino.cc/projecthub/pibots555/how-to-connect-dht11-sensor-with-arduino-uno-f4d239](https://learn.adafruit.com/dht/connecting-to-a-dhtxx-sensor)
+
+<a id="2">[2]</a>
+[https://www.instructables.com/Moisture-Detection-With-Two-Nails/](https://www.instructables.com/Moisture-Detection-With-Two-Nails/)
