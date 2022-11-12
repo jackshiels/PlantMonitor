@@ -106,7 +106,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 ## FlagReceiverMain
 
-FlagReceiverMain is the script that is run on the Arduino Uno. The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Originally, the servo was set to rotate 120 degrees and back again on a loop when moisture was low. However, some feedback was given to make the flag raise when moisture levels are poor, and lower again after a sufficient watering. The new code is shown below. If the moisture level is low, a '1' serial signal is sent to raise the flag. Once moisture drops, a '0' signal is sent to lower it back to its original state. Below is a snippet of the core flag raising logic:
+FlagReceiverMain is the script that is run on the Arduino Uno. This script was partially adapted from some sample code [[3]](3). The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Originally, the servo was set to rotate 120 degrees and back again on a loop when moisture was low. However, some feedback was given to make the flag raise when moisture levels are poor, and lower again after a sufficient watering. The new code is shown below. If the moisture level is low, a '1' serial signal is sent to raise the flag. Once moisture drops, a '0' signal is sent to lower it back to its original state. Below is a snippet of the core flag raising logic:
 
 ```
 if (Serial.available() > 0){
@@ -172,3 +172,6 @@ Jack Shiels
 
 <a id="2">[2]</a>
 [https://www.instructables.com/Moisture-Detection-With-Two-Nails/](https://www.instructables.com/Moisture-Detection-With-Two-Nails/)
+
+<a id="3">[3]</a>
+[https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/](https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/)
