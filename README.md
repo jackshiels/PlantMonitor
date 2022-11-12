@@ -169,7 +169,7 @@ Environment variables should ideally be written into the `/etc/profile/` directo
 
 Start Telegraf with the following command: `telegraf --config [my Raspberry Pi IP address]:8086/api/v2/telegrafs/[ID provided by InfluxDB]`.
 
-Grafana should then be configured to grab data from the `mqtt-data` bucket. After installing Grafana, create a data source that references the localhost IP `127.0.0.1:8086`. Ensure you are grabbing from the `mqtt-data` bucket. From here, a dashboard can be designed with the appropriate queries:
+Grafana should then be configured to grab data from the `mqtt-data` bucket. After installing Grafana, create a data source that references the localhost IP `127.0.0.1:8086`. From here, a dashboard can be designed with the appropriate queries:
 
 ![Grafana](https://github.com/jackshiels/PlantMonitor/blob/main/Images/grafana2.png?raw=true)
 
