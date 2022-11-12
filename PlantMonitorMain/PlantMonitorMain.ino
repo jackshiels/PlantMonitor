@@ -7,6 +7,18 @@
 #include "arduino_secrets.h"
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 
+/*
+NOTE: you'll need to create an arduino_secrets.h file and fill in the following const:
+
+#define SECRET_SSID "your ssid";
+#define SECRET_PASS "your WiFi password";
+#define MQTT_SERVER "your MQTT broker address";
+#define MQTT_PORT the port of your broker;
+#define SECRET_MQTTUSER "your MQTT user";
+#define SECRET_MQTTPASS "your mqtt password";
+
+*/
+
 // Sensors - DHT22 and Nails
 uint8_t DHTPin = 12;        // on Pin 12
 uint8_t soilPin = 0;      // ADC or A0 pin on Huzzah
