@@ -168,10 +168,10 @@ Jack Shiels
 
 # References
 <a id="1">[1]</a>
-[https://create.arduino.cc/projecthub/pibots555/how-to-connect-dht11-sensor-with-arduino-uno-f4d239](https://learn.adafruit.com/dht/connecting-to-a-dhtxx-sensor)
+Yapa, M. T. (2021). <i>DHT11 & DHT22 Sensors Temperature using Arduino</i>. Available at: [https://create.arduino.cc/projecthub/MinukaThesathYapa/dht11-dht22-sensors-temperature-using-arduino-b7a8d6](https://create.arduino.cc/projecthub/MinukaThesathYapa/dht11-dht22-sensors-temperature-using-arduino-b7a8d6) (Accessed on 12 November 2022).
 
 <a id="2">[2]</a>
-[https://www.instructables.com/Moisture-Detection-With-Two-Nails/](https://www.instructables.com/Moisture-Detection-With-Two-Nails/)
+Tucker, R. (2017). <i>Moisture detection with two nails</i>. Available at: [https://www.instructables.com/Moisture-Detection-With-Two-Nails/](https://www.instructables.com/Moisture-Detection-With-Two-Nails/) (Accessed 12 November 2022).
 
 <a id="3">[3]</a>
-[https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/](https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/)
+Koumaris, N. (2022). <i>Using the SG90 servo motor with an arduino</i>. Available at: [https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/](https://www.electronics-lab.com/project/using-sg90-servo-motor-arduino/) (Accessed: 12 November 2022).
