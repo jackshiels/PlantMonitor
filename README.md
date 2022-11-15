@@ -88,14 +88,15 @@ NOTE: you'll need to create an arduino_secrets.h file with the following variabl
 The setup method initialises the pins, opens serial connectivity, and starts the WiFi and MQTT networking methods. The main loop operates on a 10,000ms second delay, meaning it grabs DHT and moisture data once every ten seconds. Both moisture reading and DHT data gathering are abstracted into their own methods (`ReadMoisture()` and `ReadDHTValues()`). `ReadMoisture()` does a check for the moisture threshold, which is set at 40. Once below this number, it sends a serial value of `1` to the other Arduino to activate the 'Help!' flag.
 
 ```
+// Receives web server requests and reads sensor data every second
 void loop() {
   // handler for receiving requests to webserver
   server.handleClient();
-  delay(10000);
+  delay(1000);
+
+  // Get the moisture levels and DHT data
   readMoisture();
   sendMQTT();
-
-  // Send the Rx signal to the other Arduino
   client.loop();
 }
 ```
@@ -105,12 +106,17 @@ The `sendMQTT()` uses a `PubsubClient` object to push data to the CASA MQTT serv
 Additionally, a callback function `callback` is provided to allow remote activation of the flag servo. This method can receive an MQTT signal at the topic `activateServo`, which is subscribed to in the `reconnect` method.
 
 ```
+// Activates if an MQTT signal is sent with the activateServo command (can be 0 or 1).
+// Used to test the servo.
 void callback(char* topic, byte* payload, unsigned int length) {
   // Receives a message from MQTT
   // Activates servo if character is 1
   if ((char)payload[0] == '1') {
     digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
     Serial.print(1);
+  }
+  else if ((char)payload[0] == '0'){
+    Serial.print(0);
   } else {
     digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
   }
@@ -122,11 +128,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
 FlagReceiverMain is the script that is run on the Arduino Uno. This script was partially adapted from some sample code [[4]](4). The purpose of this script is to receive serial signals and move a servo in response. These serial signals are sent from the Huzzah board. The script relies on `<Servo.h>` to control the SG90-HV servo motor, which is activated when a single char of '1' is received through the Arduino's Rx pin. Originally, the servo was set to rotate 120 degrees and back again on a loop when moisture was low. However, some feedback was given to make the flag raise when moisture levels are poor, and lower again after a sufficient watering. The new code is shown below. If the moisture level is low, a '1' serial signal is sent to raise the flag. Once moisture drops, a '0' signal is sent to lower it back to its original state. Below is a snippet of the core flag raising logic:
 
 ```
-if (Serial.available() > 0){
+// If the serial is set up
+  if (Serial.available() > 0){
     // Read the byte from the Huzzah
     incomingByte = Serial.read();
     Serial.println(incomingByte);
-    // If activated
+    // 1 = activates flag upward, 0 = activates flag downward
+    // If told to raise and already lowered
     if (incomingByte == '1'
     && angle == 10){
       Serial.println("Moisture level: low");
@@ -137,6 +145,7 @@ if (Serial.available() > 0){
         delay(15);                   
       } 
     }
+    // If told to lower and already raised
     else if (incomingByte == '0'
     && angle == 120){
       Serial.println("Moisture level: good");
@@ -146,6 +155,13 @@ if (Serial.available() > 0){
         servo.write(angle);           
         delay(15);       
       } 
+    }
+    else {
+      Serial.println("No signal compatible");
+    }
+  }
+  else {
+      Serial.println("No signal detected via Rx");
     }
 ```
 ## MQTT and Raspberry Pi setup
