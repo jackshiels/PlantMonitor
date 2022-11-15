@@ -6,13 +6,15 @@ int angle = 10;
 bool up = false;
 char incomingByte = "0";
 
-// Manages the servo Arduino
+// Manages the servo on the Arduino Uno
 void setup() {
+  // Attach the servo to port 13 and write the initial angle
   servo.attach(13);
   servo.write(angle);
   Serial.begin(115200);
 }
 
+// Checks for input serial signals and moves the flag
 void loop() 
 { 
   Serial.println(angle);
@@ -21,7 +23,8 @@ void loop()
     // Read the byte from the Huzzah
     incomingByte = Serial.read();
     Serial.println(incomingByte);
-    // If activated
+    // 1 = activates flag upward, 0 = activates flag downward
+    // If told to raise and already lowered
     if (incomingByte == '1'
     && angle == 10){
       Serial.println("Moisture level: low");
@@ -32,6 +35,7 @@ void loop()
         delay(15);                   
       } 
     }
+    // If told to lower and already raised
     else if (incomingByte == '0'
     && angle == 120){
       Serial.println("Moisture level: good");

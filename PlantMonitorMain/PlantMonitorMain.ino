@@ -9,14 +9,12 @@
 
 /*
 NOTE: you'll need to create an arduino_secrets.h file and fill in the following const:
-
 #define SECRET_SSID "your ssid";
 #define SECRET_PASS "your WiFi password";
 #define MQTT_SERVER "your MQTT broker address";
 #define MQTT_PORT the port of your broker;
 #define SECRET_MQTTUSER "your MQTT user";
 #define SECRET_MQTTPASS "your mqtt password";
-
 */
 
 // Sensors - DHT22 and Nails
@@ -66,11 +64,11 @@ void setup() {
   Serial.begin(115200);
   delay(100);
 
-  // start DHT sensor and begin reading
+  // start DHT sensor and begin reading DHT
   pinMode(DHTPin, INPUT);
   dht.begin();
 
-  // run initialisation functions
+  // run initialisation functions for the WiFi and web server
   startWifi();
   startWebserver();
   syncDate();
@@ -80,49 +78,54 @@ void setup() {
   client.setCallback(callback);
 }
 
+// Receives web server requests and reads sensor data every second
 void loop() {
   // handler for receiving requests to webserver
   server.handleClient();
   delay(1000);
+
+  // Get the moisture levels and DHT data
   readMoisture();
   sendMQTT();
-
-  // Send the Rx signal to the other Arduino
   client.loop();
 }
 
+// Checks the resistance level between the two nails, based on an analog reading
+// of A0
 void readMoisture(){
   // Requests the moisture level
-  // power the sensor
+  // power the nail to drive an electrical current through the soil
   digitalWrite(sensorVCC, HIGH);
   digitalWrite(blueLED, LOW);
   delay(100);
-  // read the value from the sensor by grabbing its analog value
-  Moisture = analogRead(soilPin);        
-  //stop power
+
+  // read the electrical value from the sensor by grabbing its analog value
+  Moisture = analogRead(soilPin);   
+
+  // stop power to the nail
   digitalWrite(sensorVCC, LOW);  
   digitalWrite(blueLED, HIGH);
   delay(100);
 }
 
+// Connects to the WiFi network specified in arduino_secrets.h
 void startWifi() {
   // We start by connecting to a WiFi network
   WiFi.begin(ssid, password);
 
-  // check to see if connected and wait until you are
+  // check to see if connected or wait until you are
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
 }
 
 void syncDate() {
-  // get real date and time
+  // get real date and time and set for UK time
   waitForSync();
-  // Serial.println("UTC: " + UTC.dateTime());
   GB.setLocation("Europe/London");
-  // Serial.println("London time: " + GB.dateTime());
 }
 
+// Loads a local web server where you can check sensor values
 void startWebserver() {
   // When connected and IP address obtained start HTTP server
   // Sets delegate functions for server actions of GET
@@ -131,6 +134,8 @@ void startWebserver() {
   server.begin();
 }
 
+// Gets the DHT values and sends them, along with moisture, to the
+// MQTT server specified in arduino_secrets.h
 void sendMQTT() {
   // Check for a valid connection
   if (!client.connected()) {
@@ -154,12 +159,15 @@ void sendMQTT() {
   client.publish("student/CASA0014/plant/ucfnhie/moisture", msg);
 }
 
+// Reads from the DHT sensor
 void ReadDHTValues(){
   // Get the temperature and humidity DHT values
   Temperature = dht.readTemperature();
   Humidity = dht.readHumidity();
 }
 
+// Activates if an MQTT signal is sent with the activateServo command (can be 0 or 1).
+// Used to test the servo.
 void callback(char* topic, byte* payload, unsigned int length) {
   // Receives a message from MQTT
   // Activates servo if character is 1
@@ -174,6 +182,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
+// Connects to MQTT and handles the callback delegate for MQTT input signals.
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
@@ -192,16 +201,19 @@ void reconnect() {
   }
 }
 
+// Performs the calculations for the web server page
 void handle_OnConnect() {
   Temperature = dht.readTemperature(); // Gets the values of the temperature
   Humidity = dht.readHumidity(); // Gets the values of the humidity
   server.send(200, "text/html", SendHTML(Temperature, Humidity, Moisture));
 }
 
+// A 404 error message web page for the server
 void handle_NotFound() {
   server.send(404, "text/plain", "Not found");
 }
 
+// Creates the HTML frontend for the web server
 String SendHTML(float Temperaturestat, float Humiditystat, int Moisturestat) {
   String ptr = "<!DOCTYPE html> <html>\n";
   ptr += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n";
@@ -213,7 +225,7 @@ String SendHTML(float Temperaturestat, float Humiditystat, int Moisturestat) {
   ptr += "</head>\n";
   ptr += "<body>\n";
   ptr += "<div id=\"webpage\">\n";
-  ptr += "<h1>ESP8266 Huzzah DHT22 Report</h1>\n";
+  ptr += "<h1>Flag Plant Monitor Data</h1>\n";
 
   ptr += "<p>Temperature: ";
   ptr += (int)Temperaturestat;
